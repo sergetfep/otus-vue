@@ -12,3 +12,108 @@
   font-weight: 500;
   text-align: center;
 }
+
+.btn {
+  border-radius: 4px;
+  background: #67c4a7;
+  padding: 8px 19px;
+  color: #fff;
+  text-align: center;
+  transition: all 0.3s;
+
+  &:hover {
+    background: #519a83;
+  }
+}
+
+.form {
+  &__container {
+    margin: 20px auto 0 auto;
+    max-width: 600px;
+    width: fit-content;
+    border-radius: 10px;
+    box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  &__title {
+    color: #333;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 135%;
+    text-align: center;
+  }
+
+  &__group {
+    @apply flex flex-col gap-2;
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 105%;
+  }
+
+  &__select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  &__input,
+  &__select {
+    width: 384px;
+    max-width: 100%;
+    border-radius: 6px;
+    background: #f5f6f5;
+    padding: 13px 18px;
+
+    color: #3f414e;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 105%;
+    letter-spacing: 0.6px;
+
+    &:focus {
+      outline-color: #67c4a7;
+    }
+  }
+
+  &__checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+
+    width: 19px;
+    height: 19px;
+
+    border-radius: 3px;
+    border: 1.5px solid #7d7d7d;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 0.65em;
+      height: 0.65em;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      transform: scale(0);
+      transition: 120ms transform ease-in-out;
+      background-color: #67c4a7;
+    }
+
+    &:checked::before {
+      transform: scale(1);
+    }
+  }
+
+  &__error {
+    margin-left: 5px;
+    color: red;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 105%;
+    letter-spacing: 0.6px;
+  }
+}
