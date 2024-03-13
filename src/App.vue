@@ -1,36 +1,72 @@
 <script lang="ts">
 import TheHeader from '@/components/layout/TheHeader.vue';
 
-import HomePage from './pages/HomePage.vue';
-import OrderPage from './pages/OrderPage.vue';
-import AddProductPage from './pages/AddProductPage.vue';
+import { RouterView } from 'vue-router';
 
 export default {
   components: {
     TheHeader,
-    HomePage,
-    OrderPage,
-    AddProductPage
+    RouterView
   },
   data() {
     return {
-      productsFilter: ''
+      isAuthenticated: false,
+      cart: [] as { name: number; count: number }[]
     };
   },
   methods: {
-    changeProductsFilter(text: string): void {
-      this.productsFilter = text;
+    setAuthenticated(value: boolean): void {
+      this.isAuthenticated = value;
+    },
+    login(): void {
+      localStorage.setItem('authenticated', 'true');
+      this.setAuthenticated(true);
+    },
+    logout(): void {
+      localStorage.removeItem('authenticated');
+      this.setAuthenticated(false);
+    },
+    addToCart(value: number): void {
+      const index = this.cart.findIndex((val) => {
+        return value == val.name ? true : undefined;
+      });
+
+      if (index !== -1) {
+        this.cart[index].count += 1;
+      } else {
+        this.cart.push({ name: value, count: 1 });
+      }
+    },
+    removeFromCart(value: number): void {
+      const index = this.cart.findIndex((val) => {
+        return value == val.name ? true : undefined;
+      });
+
+      if (this.cart[index].count > 0) {
+        this.cart[index].count -= 1;
+      } else {
+        this.cart.splice(index, 1);
+      }
+    },
+    clearCart(): void {
+      this.cart = [];
     }
+  },
+  mounted() {
+    this.setAuthenticated(!!localStorage.getItem('authenticated'));
   }
 };
 </script>
 
 <template>
-  <TheHeader @search-change="changeProductsFilter"></TheHeader>
+  <TheHeader
+    :isAuthenticated="isAuthenticated"
+    @logout="logout"
+    :cart="cart"
+    @clear-cart="clearCart"
+  />
   <main>
-    <OrderPage />
-    <AddProductPage />
-    <HomePage :products-filter="productsFilter" />
+    <RouterView @login="login" @add-to-cart="addToCart" />
   </main>
   <!-- <footer></footer> -->
 </template>

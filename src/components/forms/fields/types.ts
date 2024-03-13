@@ -5,4 +5,5 @@ export interface IField {
   placeholder?: string;
   component?: string;
   options?: object;
+  attrs?: object;
 }
