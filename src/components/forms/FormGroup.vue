@@ -34,7 +34,11 @@ export default defineComponent({
   <div class="form__group">
     <div class="flex gap-2" :class="{ 'flex-col': !isCheckbox, 'items-center': isCheckbox }">
       <label :for="field.name" class="form__label">{{ field.labelText }}</label>
-      <component :is="field.component || 'TextField'" :field="field"></component>
+      <component
+        :is="field.component || 'TextField'"
+        v-bind="field.attrs"
+        :field="field"
+      ></component>
     </div>
     <VErrorMessage :name="field.name" class="form__error" />
   </div>
