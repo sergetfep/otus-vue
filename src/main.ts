@@ -1,7 +1,7 @@
 import './assets/style.scss';
 
 import { createApp } from 'vue';
-// import { createPinia } from 'pinia';
+import { createPinia } from 'pinia';
 
 import App from './App.vue';
 import router from './router';
@@ -20,5 +20,5 @@ createApp(App)
   .component('BaseLoader', BaseLoader)
   .component('BaseToast', BaseToast)
   .use(router)
-  // .use(createPinia())
+  .use(createPinia())
   .mount('#app');

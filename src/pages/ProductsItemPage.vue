@@ -3,18 +3,21 @@ import { defineComponent } from 'vue';
 
 import type { Product } from '@/types/products';
 
+import useCartStore from '@/stores/cart';
+import { mapActions } from 'pinia';
+
 export default defineComponent({
   props: {
     id: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       isLoading: true,
       error: null as null | string,
-      product: {} as Product
+      product: {} as Product,
     };
   },
   methods: {
@@ -31,13 +34,13 @@ export default defineComponent({
 
       this.isLoading = false;
     },
-    addToCart() {
-      this.$emit('add-to-cart', this.product.id);
-    }
+    ...mapActions(useCartStore, {
+      addToCart: 'addToCart',
+    }),
   },
   async mounted(): Promise<void> {
     await this.loadProduct();
-  }
+  },
 });
 </script>
 
@@ -57,7 +60,7 @@ export default defineComponent({
           </p>
           <p class="item__descr">{{ product.description }}</p>
           <p class="item__price mt-auto">${{ product.price }}</p>
-          <button class="btn item__btn" @click="addToCart">Add to cart</button>
+          <button class="btn item__btn" @click="addToCart(product.id)">Add to cart</button>
         </div>
       </div>
       <p v-else>{{ error }}</p>

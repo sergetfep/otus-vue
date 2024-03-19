@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 import { RouterLink } from 'vue-router';
+
+import useCartStore from '@/stores/cart';
+import { mapState, mapActions } from 'pinia';
 
 export default defineComponent({
   components: { RouterLink },
@@ -9,27 +11,19 @@ export default defineComponent({
   props: {
     isAuthenticated: {
       type: Boolean,
-      required: true
+      required: true,
     },
-    cart: {
-      type: Array<{ name: number; count: number }>,
-      required: true
-    }
   },
   data() {
     return {
       searchText: '',
-      timer: null as null | number
+      timer: null as null | number,
     };
   },
   computed: {
-    cartCount(): number {
-      let count = 0;
-      for (const item of this.cart) {
-        count += item.count;
-      }
-      return count;
-    }
+    ...mapState(useCartStore, {
+      getCount: 'getCount',
+    }),
   },
   watch: {
     searchText(): void {
@@ -40,7 +34,7 @@ export default defineComponent({
       this.timer = setTimeout(() => {
         this.updateSearchResults(this.searchText);
       }, 300);
-    }
+    },
   },
   methods: {
     updateSearchResults(value: string): void {
@@ -49,10 +43,10 @@ export default defineComponent({
     logout(): void {
       this.$emit('logout');
     },
-    clearCart() {
-      this.$emit('clear-cart');
-    }
-  }
+    ...mapActions(useCartStore, {
+      clearCart: 'clearCart',
+    }),
+  },
 });
 </script>
 
@@ -73,7 +67,7 @@ export default defineComponent({
         </form>
         <RouterLink :to="{ name: 'order' }" class="header__link">Order</RouterLink>
         <RouterLink :to="{ name: 'products.add' }" class="header__link">Add product</RouterLink>
-        <button class="header__link" @click="clearCart">Cart ({{ cartCount }})</button>
+        <button class="header__link" @click="clearCart">Cart ({{ getCount }})</button>
         <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="header__link">
           Login
         </RouterLink>
