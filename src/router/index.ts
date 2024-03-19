@@ -5,40 +5,40 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    redirect: { name: 'products' }
+    redirect: { name: 'products' },
   },
   {
     path: '/products',
     name: 'products',
-    component: ProductsPage
+    component: ProductsPage,
   },
   {
     path: '/products/:id',
     name: 'products.item',
     component: () => import('@/pages/ProductsItemPage.vue'),
-    props: true
+    props: true,
   },
   {
     path: '/products/add',
     name: 'products.add',
-    component: () => import('@/pages/AddProductPage.vue')
+    component: () => import('@/pages/AddProductPage.vue'),
   },
   {
     path: '/order',
     name: 'order',
-    component: () => import('@/pages/OrderPage.vue')
+    component: () => import('@/pages/OrderPage.vue'),
   },
 
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/pages/LoginPage.vue')
-  }
+    component: () => import('@/pages/LoginPage.vue'),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes,
 });
 
 router.beforeEach(async (to) => {

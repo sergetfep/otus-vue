@@ -14,19 +14,19 @@ export default defineComponent({
     VErrorMessage: ErrorMessage,
     TextField,
     SelectField,
-    CheckboxField
+    CheckboxField,
   },
   props: {
     field: {
       type: Object as PropType<IField>,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     isCheckbox(): boolean {
       return this.field.component === 'CheckboxField';
-    }
-  }
+    },
+  },
 });
 </script>
 

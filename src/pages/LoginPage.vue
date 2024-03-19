@@ -7,7 +7,7 @@ import type { IField } from '../components/forms/fields/types';
 
 export default defineComponent({
   components: {
-    TheForm
+    TheForm,
   },
   data() {
     return {
@@ -16,20 +16,20 @@ export default defineComponent({
           {
             name: 'login',
             labelText: 'Login',
-            rules: 'required'
+            rules: 'required',
           },
           {
             name: 'password',
             labelText: 'Password',
             rules: 'required',
             attrs: {
-              type: 'password'
-            }
-          }
+              type: 'password',
+            },
+          },
         ] as IField[],
         title: 'Login',
-        btnText: 'Login'
-      }
+        btnText: 'Login',
+      },
     };
   },
   methods: {
@@ -37,8 +37,8 @@ export default defineComponent({
       resetForm();
       this.$emit('login');
       this.$router.push({ name: 'products.add' });
-    }
-  }
+    },
+  },
 });
 </script>
 

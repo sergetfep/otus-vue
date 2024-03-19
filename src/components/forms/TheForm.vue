@@ -17,14 +17,14 @@ interface IConfig {
 export default defineComponent({
   components: {
     VForm: Form,
-    FormGroup
+    FormGroup,
   },
   props: {
     config: {
       type: Object as PropType<IConfig>,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 </script>
 
