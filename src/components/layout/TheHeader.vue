@@ -3,17 +3,11 @@ import { defineComponent } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import useCartStore from '@/stores/cart';
+import useAuthStore from '@/stores/auth';
 import { mapState, mapActions } from 'pinia';
 
 export default defineComponent({
   components: { RouterLink },
-
-  props: {
-    isAuthenticated: {
-      type: Boolean,
-      required: true,
-    },
-  },
   data() {
     return {
       searchText: '',
@@ -23,6 +17,10 @@ export default defineComponent({
   computed: {
     ...mapState(useCartStore, {
       getCount: 'getCount',
+    }),
+    ...mapState(useAuthStore, {
+      isAuthenticated: 'getIsAuthenticated',
+      username: 'getUsername',
     }),
   },
   watch: {
@@ -40,12 +38,17 @@ export default defineComponent({
     updateSearchResults(value: string): void {
       this.$router.push({ name: 'products', query: { search: value.toLowerCase() } });
     },
-    logout(): void {
-      this.$emit('logout');
-    },
     ...mapActions(useCartStore, {
-      clearCart: 'clearCart',
+      initCart: 'initCart',
     }),
+    ...mapActions(useAuthStore, {
+      logout: 'logout',
+      initIsAuthenticated: 'initIsAuthenticated',
+    }),
+  },
+  mounted() {
+    this.initIsAuthenticated();
+    this.initCart();
   },
 });
 </script>
@@ -57,6 +60,8 @@ export default defineComponent({
         Vue Store
       </RouterLink>
       <div class="flex items-center gap-4">
+        <RouterLink :to="{ name: 'order' }" class="header__link">Order</RouterLink>
+        <RouterLink :to="{ name: 'products.add' }" class="header__link">Add product</RouterLink>
         <form @submit.prevent>
           <input
             type="text"
@@ -65,13 +70,17 @@ export default defineComponent({
             v-model="searchText"
           />
         </form>
-        <RouterLink :to="{ name: 'order' }" class="header__link">Order</RouterLink>
-        <RouterLink :to="{ name: 'products.add' }" class="header__link">Add product</RouterLink>
-        <button class="header__link" @click="clearCart">Cart ({{ getCount }})</button>
+        <RouterLink :to="{ name: 'cart' }" class="header__link">Cart ({{ getCount }})</RouterLink>
         <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="header__link">
           Login
         </RouterLink>
-        <button v-else class="header__link" @click="logout">Logout</button>
+        <template v-else>
+          <div class="header__profile">
+            {{ username }}
+            <img src="../../assets/images/profile.svg" alt="" />
+          </div>
+          <button class="header__link" @click="logout">Logout</button>
+        </template>
       </div>
     </div>
   </header>
@@ -94,6 +103,21 @@ export default defineComponent({
     &:hover,
     &:focus {
       color: #67c4a7;
+    }
+  }
+
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #494949;
+    font-size: 18px;
+    font-weight: 400;
+
+    img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
     }
   }
 

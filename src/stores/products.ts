@@ -19,6 +19,15 @@ const useProductsStore = defineStore('products', {
         console.log('Загрузка не удалась.');
       }
     },
+    async loadSingleProduct(id: number): Promise<Product | void> {
+      try {
+        const result = await fetch('https://fakestoreapi.com/products/' + id);
+        const product = (await result.json()) as Product;
+        return product;
+      } catch (error) {
+        console.log('Загрузка не удалась.');
+      }
+    },
     setProductsFilter(value: string): void {
       this.filter = value;
     },

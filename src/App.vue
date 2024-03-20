@@ -8,35 +8,13 @@ export default {
     TheHeader,
     RouterView,
   },
-  data() {
-    return {
-      isAuthenticated: false,
-      cart: [] as { name: number; count: number }[],
-    };
-  },
-  methods: {
-    setAuthenticated(value: boolean): void {
-      this.isAuthenticated = value;
-    },
-    login(): void {
-      localStorage.setItem('authenticated', 'true');
-      this.setAuthenticated(true);
-    },
-    logout(): void {
-      localStorage.removeItem('authenticated');
-      this.setAuthenticated(false);
-    },
-  },
-  mounted() {
-    this.setAuthenticated(!!localStorage.getItem('authenticated'));
-  },
 };
 </script>
 
 <template>
-  <TheHeader :isAuthenticated="isAuthenticated" @logout="logout" />
+  <TheHeader />
   <main>
-    <RouterView @login="login" />
+    <RouterView />
   </main>
   <!-- <footer></footer> -->
 </template>

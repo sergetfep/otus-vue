@@ -1,6 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+import useAuthStore from '@/stores/auth';
+import { mapActions } from 'pinia';
+
 import TheForm from '@/components/forms/TheForm.vue';
 
 import type { IField } from '../components/forms/fields/types';
@@ -33,9 +36,12 @@ export default defineComponent({
     };
   },
   methods: {
-    async onSubmit(values: object, { resetForm }: any): Promise<void> {
+    ...mapActions(useAuthStore, {
+      login: 'login',
+    }),
+    async onSubmit(values: { login: ''; password: '' }, { resetForm }: any): Promise<void> {
       resetForm();
-      this.$emit('login');
+      this.login(values.login);
       this.$router.push({ name: 'products.add' });
     },
   },

@@ -28,11 +28,15 @@ const routes = [
     name: 'order',
     component: () => import('@/pages/OrderPage.vue'),
   },
-
   {
     path: '/login',
     name: 'login',
     component: () => import('@/pages/LoginPage.vue'),
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: () => import('@/pages/CartPage.vue'),
   },
 ];
 

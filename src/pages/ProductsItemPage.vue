@@ -4,6 +4,7 @@ import { defineComponent } from 'vue';
 import type { Product } from '@/types/products';
 
 import useCartStore from '@/stores/cart';
+import useProductsStore from '@/stores/products';
 import { mapActions } from 'pinia';
 
 export default defineComponent({
@@ -21,25 +22,19 @@ export default defineComponent({
     };
   },
   methods: {
-    async loadProduct(): Promise<void> {
-      this.error = null;
-      this.isLoading = true;
-
-      try {
-        const result = await fetch('https://fakestoreapi.com/products/' + this.id);
-        this.product = (await result.json()) as Product;
-      } catch (error) {
-        this.error = 'Загрузка не удалась.';
-      }
-
-      this.isLoading = false;
-    },
     ...mapActions(useCartStore, {
       addToCart: 'addToCart',
     }),
+    ...mapActions(useProductsStore, {
+      loadSingleProduct: 'loadSingleProduct',
+    }),
   },
   async mounted(): Promise<void> {
-    await this.loadProduct();
+    this.error = null;
+    this.isLoading = true;
+
+    this.product = (await this.loadSingleProduct(parseInt(this.id))) as Product;
+    this.isLoading = false;
   },
 });
 </script>

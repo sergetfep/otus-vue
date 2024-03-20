@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia';
 
-interface ICart {
-  [index: number]: number;
-  keys(): number[];
-  hasOwnProperty(key: number): boolean;
-}
-
 const useCartStore = defineStore('cart', {
   state: () => {
     return {
-      cart: {} as ICart,
+      cart: {} as Record<number, number>,
     };
   },
   actions: {
+    initCart(): void {
+      this.cart = JSON.parse(localStorage.getItem('cart') || '');
+    },
+    saveCart(): void {
+      localStorage.setItem('cart', JSON.stringify(this.cart));
+    },
     addToCart(id: number) {
       const res = Object.prototype.hasOwnProperty.call(this.cart, id);
 
@@ -21,27 +21,30 @@ const useCartStore = defineStore('cart', {
       } else {
         this.cart[id] = 1;
       }
+      this.saveCart();
     },
     removeFromCart(id: number) {
       const res = Object.prototype.hasOwnProperty.call(this.cart, id);
 
       if (res) {
-        if (this.cart[id] > 0) {
+        if (this.cart[id] > 1) {
           this.cart[id] -= 1;
         } else {
           delete this.cart[id];
         }
       }
+      this.saveCart();
     },
     clearCart() {
-      this.cart = {} as ICart;
+      this.cart = {};
+      this.saveCart();
     },
   },
   getters: {
-    getCart(state) {
+    getCart(state): Record<number, number> {
       return state.cart;
     },
-    getCount(state) {
+    getCount(state): number {
       let count = 0;
       for (const id in state.cart) {
         count += state.cart[id];
