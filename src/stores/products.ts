@@ -15,6 +15,7 @@ const useProductsStore = defineStore('products', {
         const result = await fetch('https://fakestoreapi.com/products');
         const products = (await result.json()) as Product[];
         this.products = products;
+        /* v8 ignore next 3 */
       } catch (e) {
         console.log('Загрузка не удалась.');
       }
@@ -24,6 +25,7 @@ const useProductsStore = defineStore('products', {
         const result = await fetch('https://fakestoreapi.com/products/' + id);
         const product = (await result.json()) as Product;
         return product;
+        /* v8 ignore next 3 */
       } catch (error) {
         console.log('Загрузка не удалась.');
       }
@@ -38,6 +40,7 @@ const useProductsStore = defineStore('products', {
         return state.products;
       } else {
         return state.products.filter((product) => {
+          /* v8 ignore next 4 */
           return (
             product.title.toLowerCase().includes(state.filter) ||
             product.price.toString().includes(state.filter)

@@ -8,7 +8,7 @@ const useCartStore = defineStore('cart', {
   },
   actions: {
     initCart(): void {
-      this.cart = JSON.parse(localStorage.getItem('cart') || '');
+      this.cart = JSON.parse(localStorage.getItem('cart') || '{}');
     },
     saveCart(): void {
       localStorage.setItem('cart', JSON.stringify(this.cart));
