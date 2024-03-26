@@ -6,21 +6,24 @@ import type { Product } from '@/types/products';
 
 import { RouterLink } from 'vue-router';
 
+import useCartStore from '@/stores/cart';
+import { mapActions } from 'pinia';
+
 export default defineComponent({
   components: {
-    RouterLink
+    RouterLink,
   },
   props: {
     product: {
       type: Object as PropType<Product>,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    addToCart(value: number) {
-      this.$emit('add-to-cart', value);
-    }
-  }
+    ...mapActions(useCartStore, {
+      addToCart: 'addToCart',
+    }),
+  },
 });
 </script>
 

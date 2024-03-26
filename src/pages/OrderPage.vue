@@ -7,20 +7,17 @@ import { toastConfig, formConfig } from '@/pages/OrderPageConfig';
 
 export default defineComponent({
   components: {
-    TheForm
+    TheForm,
   },
   data() {
-    return {
-      toastConfig,
-      formConfig
-    };
+    return { toastConfig, formConfig };
   },
   methods: {
     async sendOrder(values: object): Promise<void> {
       try {
         const response = await fetch('https://httpbin.org/post', {
           method: 'POST',
-          body: JSON.stringify(values)
+          body: JSON.stringify(values),
         });
         await response.json();
       } catch (error) {
@@ -40,8 +37,8 @@ export default defineComponent({
       setTimeout(() => {
         this.toastConfig.isShown = false;
       }, 3000);
-    }
-  }
+    },
+  },
 });
 </script>
 

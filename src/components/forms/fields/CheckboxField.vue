@@ -8,14 +8,14 @@ import type { IField } from './types.ts';
 
 export default defineComponent({
   components: {
-    VField: Field
+    VField: Field,
   },
   props: {
     field: {
       type: Object as PropType<IField>,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 </script>
 

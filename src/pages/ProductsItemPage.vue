@@ -3,41 +3,39 @@ import { defineComponent } from 'vue';
 
 import type { Product } from '@/types/products';
 
+import useCartStore from '@/stores/cart';
+import useProductsStore from '@/stores/products';
+import { mapActions } from 'pinia';
+
 export default defineComponent({
   props: {
     id: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       isLoading: true,
       error: null as null | string,
-      product: {} as Product
+      product: {} as Product,
     };
   },
   methods: {
-    async loadProduct(): Promise<void> {
-      this.error = null;
-      this.isLoading = true;
-
-      try {
-        const result = await fetch('https://fakestoreapi.com/products/' + this.id);
-        this.product = (await result.json()) as Product;
-      } catch (error) {
-        this.error = 'Загрузка не удалась.';
-      }
-
-      this.isLoading = false;
-    },
-    addToCart() {
-      this.$emit('add-to-cart', this.product.id);
-    }
+    ...mapActions(useCartStore, {
+      addToCart: 'addToCart',
+    }),
+    ...mapActions(useProductsStore, {
+      loadSingleProduct: 'loadSingleProduct',
+    }),
   },
   async mounted(): Promise<void> {
-    await this.loadProduct();
-  }
+    this.error = null;
+    this.isLoading = true;
+
+    this.product = (await this.loadSingleProduct(parseInt(this.id))) as Product;
+    this.isLoading = false;
+  },
 });
 </script>
 
@@ -57,7 +55,7 @@ export default defineComponent({
           </p>
           <p class="item__descr">{{ product.description }}</p>
           <p class="item__price mt-auto">${{ product.price }}</p>
-          <button class="btn item__btn" @click="addToCart">Add to cart</button>
+          <button class="btn item__btn" @click="addToCart(product.id)">Add to cart</button>
         </div>
       </div>
       <p v-else>{{ error }}</p>

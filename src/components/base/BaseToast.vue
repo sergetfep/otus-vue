@@ -11,9 +11,9 @@ export default defineComponent({
   props: {
     config: {
       type: Object as PropType<IConfig>,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 </script>
 

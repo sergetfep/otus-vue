@@ -1,35 +1,27 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-
 import { RouterLink } from 'vue-router';
+
+import useCartStore from '@/stores/cart';
+import useAuthStore from '@/stores/auth';
+import { mapState, mapActions } from 'pinia';
 
 export default defineComponent({
   components: { RouterLink },
-
-  props: {
-    isAuthenticated: {
-      type: Boolean,
-      required: true
-    },
-    cart: {
-      type: Array<{ name: number; count: number }>,
-      required: true
-    }
-  },
   data() {
     return {
       searchText: '',
-      timer: null as null | number
+      timer: null as null | number,
     };
   },
   computed: {
-    cartCount(): number {
-      let count = 0;
-      for (const item of this.cart) {
-        count += item.count;
-      }
-      return count;
-    }
+    ...mapState(useCartStore, {
+      getCount: 'getCount',
+    }),
+    ...mapState(useAuthStore, {
+      isAuthenticated: 'getIsAuthenticated',
+      username: 'getUsername',
+    }),
   },
   watch: {
     searchText(): void {
@@ -40,19 +32,24 @@ export default defineComponent({
       this.timer = setTimeout(() => {
         this.updateSearchResults(this.searchText);
       }, 300);
-    }
+    },
   },
   methods: {
     updateSearchResults(value: string): void {
       this.$router.push({ name: 'products', query: { search: value.toLowerCase() } });
     },
-    logout(): void {
-      this.$emit('logout');
-    },
-    clearCart() {
-      this.$emit('clear-cart');
-    }
-  }
+    ...mapActions(useCartStore, {
+      initCart: 'initCart',
+    }),
+    ...mapActions(useAuthStore, {
+      logout: 'logout',
+      initIsAuthenticated: 'initIsAuthenticated',
+    }),
+  },
+  mounted() {
+    this.initIsAuthenticated();
+    this.initCart();
+  },
 });
 </script>
 
@@ -63,6 +60,8 @@ export default defineComponent({
         Vue Store
       </RouterLink>
       <div class="flex items-center gap-4">
+        <RouterLink :to="{ name: 'order' }" class="header__link">Order</RouterLink>
+        <RouterLink :to="{ name: 'products.add' }" class="header__link">Add product</RouterLink>
         <form @submit.prevent>
           <input
             type="text"
@@ -71,13 +70,17 @@ export default defineComponent({
             v-model="searchText"
           />
         </form>
-        <RouterLink :to="{ name: 'order' }" class="header__link">Order</RouterLink>
-        <RouterLink :to="{ name: 'products.add' }" class="header__link">Add product</RouterLink>
-        <button class="header__link" @click="clearCart">Cart ({{ cartCount }})</button>
+        <RouterLink :to="{ name: 'cart' }" class="header__link">Cart ({{ getCount }})</RouterLink>
         <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="header__link">
           Login
         </RouterLink>
-        <button v-else class="header__link" @click="logout">Logout</button>
+        <template v-else>
+          <div class="header__profile">
+            {{ username }}
+            <img src="../../assets/images/profile.svg" alt="" />
+          </div>
+          <button class="header__link" @click="logout">Logout</button>
+        </template>
       </div>
     </div>
   </header>
@@ -100,6 +103,21 @@ export default defineComponent({
     &:hover,
     &:focus {
       color: #67c4a7;
+    }
+  }
+
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #494949;
+    font-size: 18px;
+    font-weight: 400;
+
+    img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
     }
   }
 

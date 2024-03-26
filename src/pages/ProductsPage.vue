@@ -1,28 +1,48 @@
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent } from 'vue';
 
 import ProductsItem from '../components/products/ProductsItem.vue';
 
-import { useProducts } from '@/hooks/products';
+import useProductsStore from '@/stores/products';
+import { mapState, mapActions } from 'pinia';
 
 export default defineComponent({
   components: {
-    ProductsItem
+    ProductsItem,
+  },
+  data() {
+    return {
+      error: null as null | string,
+      isLoading: false,
+    };
+  },
+  computed: {
+    ...mapState(useProductsStore, {
+      products: 'getFilteredProducts',
+    }),
+    productsFilter(): string {
+      return (this.$route.query['search'] as string) || '';
+    },
+  },
+  watch: {
+    productsFilter(value: string) {
+      this.setProductsFilter(value);
+    },
   },
   methods: {
-    addToCart(value: number) {
-      this.$emit('add-to-cart', value);
-    }
+    ...mapActions(useProductsStore, {
+      loadProducts: 'loadProducts',
+      setProductsFilter: 'setProductsFilter',
+    }),
   },
-  setup() {
-    const { isLoading, error, products, loadProducts } = useProducts();
+  async mounted() {
+    this.error = null;
+    this.isLoading = true;
 
-    onMounted(async () => {
-      await loadProducts();
-    });
+    await this.loadProducts();
 
-    return { isLoading, error, products };
-  }
+    this.isLoading = false;
+  },
 });
 </script>
 
@@ -32,12 +52,7 @@ export default defineComponent({
       <h1 class="page-title">Products list</h1>
       <BaseLoader v-if="isLoading" />
       <ul v-else-if="!isLoading && !error" class="products__list">
-        <ProductsItem
-          v-for="product in products"
-          :key="product.id"
-          :product="product"
-          @add-to-cart="addToCart"
-        />
+        <ProductsItem v-for="product in products" :key="product.id" :product="product" />
       </ul>
       <p v-else>{{ error }}</p>
     </div>
