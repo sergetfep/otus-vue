@@ -11,7 +11,7 @@ export default defineComponent({
   data() {
     return {
       searchText: '',
-      timer: null as null | number,
+      timer: null as unknown as NodeJS.Timeout,
     };
   },
   computed: {
@@ -25,6 +25,7 @@ export default defineComponent({
   },
   watch: {
     searchText(): void {
+      /* v8 ignore next 3 */
       if (this.timer) {
         clearTimeout(this.timer);
       }
@@ -43,11 +44,11 @@ export default defineComponent({
     }),
     ...mapActions(useAuthStore, {
       logout: 'logout',
-      initIsAuthenticated: 'initIsAuthenticated',
+      initAuthStore: 'initStore',
     }),
   },
   mounted() {
-    this.initIsAuthenticated();
+    this.initAuthStore();
     this.initCart();
   },
 });
@@ -56,9 +57,7 @@ export default defineComponent({
 <template>
   <header class="header">
     <div class="container flex justify-between items-center py-4">
-      <RouterLink :to="{ name: 'home' }" class="header__logo cursor-pointer">
-        Vue Store
-      </RouterLink>
+      <RouterLink :to="{ name: 'home' }" class="header__logo cursor-pointer">Vue Store</RouterLink>
       <div class="flex items-center gap-4">
         <RouterLink :to="{ name: 'order' }" class="header__link">Order</RouterLink>
         <RouterLink :to="{ name: 'products.add' }" class="header__link">Add product</RouterLink>
@@ -71,7 +70,7 @@ export default defineComponent({
           />
         </form>
         <RouterLink :to="{ name: 'cart' }" class="header__link">Cart ({{ getCount }})</RouterLink>
-        <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="header__link">
+        <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="header__link login-btn">
           Login
         </RouterLink>
         <template v-else>

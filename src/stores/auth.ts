@@ -14,7 +14,7 @@ const useAuthStore = defineStore('auth', {
     setUsername(value: string) {
       this.username = value;
     },
-    initIsAuthenticated() {
+    initStore() {
       this.setAuthenticated(!!localStorage.getItem('authenticated'));
       this.setUsername(localStorage.getItem('username') || '');
     },

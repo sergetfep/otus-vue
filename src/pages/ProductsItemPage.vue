@@ -16,7 +16,7 @@ export default defineComponent({
   },
   data() {
     return {
-      isLoading: true,
+      isLoading: false,
       error: null as null | string,
       product: {} as Product,
     };
@@ -51,14 +51,14 @@ export default defineComponent({
           <h1 class="item__title">{{ product.title }}</h1>
           <p class="item__category">{{ product.category }}</p>
           <p class="item__rating">
-            {{ 'Rate: ' + product.rating.rate + ' / Count: ' + product.rating.count }}
+            {{ 'Rate: ' + product.rating?.rate + ' / Count: ' + product.rating?.count }}
           </p>
           <p class="item__descr">{{ product.description }}</p>
           <p class="item__price mt-auto">${{ product.price }}</p>
           <button class="btn item__btn" @click="addToCart(product.id)">Add to cart</button>
         </div>
       </div>
-      <p v-else>{{ error }}</p>
+      <p v-else class="item__error">{{ error }}</p>
     </div>
   </section>
 </template>

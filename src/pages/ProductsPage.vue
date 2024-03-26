@@ -54,7 +54,7 @@ export default defineComponent({
       <ul v-else-if="!isLoading && !error" class="products__list">
         <ProductsItem v-for="product in products" :key="product.id" :product="product" />
       </ul>
-      <p v-else>{{ error }}</p>
+      <p v-else class="products__error">{{ error }}</p>
     </div>
   </section>
 </template>
